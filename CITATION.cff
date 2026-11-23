@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "Если вы используете эту модель, пожалуйста, цитируйте её."
+title: "Учебный Multics (multics_sim)"
+type: software
+authors:
+  - family-names: "Лоскутов"
+    given-names: "И.А."
+license: MIT
+repository-code: "[URL репозитория]"
+version: "1.0.0"
+date-released: "2026-11-22"

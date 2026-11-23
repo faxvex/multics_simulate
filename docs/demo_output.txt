@@ -1,0 +1,595 @@
+
+==============================================================================
+1. Пользователи: login / who / ring
+==============================================================================
+Multics> who
+В системе никого нет.
+Всего пользователей: 0
+Multics> login Ivanov.Students неверный
+Ошибка: Неверное имя пользователя, проект или пароль
+Multics> login Ivanov.Students ivan
+Создан процесс pid 1 для Ivanov.Students.a, кольцо 4, рабочий каталог >udd>Students>Ivanov
+*** Добро пожаловать в учебный Multics! Справка: help. Новое: help -af (активные функции).
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ who
+  Ivanov.Students.a            pid 1  кольцо 4
+Всего пользователей: 1
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ ring
+Текущее кольцо процесса: 4
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ print_wdir
+>udd>Students>Ivanov
+
+==============================================================================
+2. Иерархическая файловая система (разделитель '>')
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ list >
+Каталог > (записей: 3)
+  ACL — что разрешает список доступа; Итог — что реально можно с учётом кольца
+  Тип   ACL    Итог   Кольца   Сегм  Размер  Имя
+  dir   s      s      0,7,7   #3         -  pdd
+  dir   s      s      0,7,7   #2         -  sss
+  dir   s      s      0,7,7   #1         -  udd
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ list >udd>Students
+Каталог >udd>Students (записей: 2)
+  ACL — что разрешает список доступа; Итог — что реально можно с учётом кольца
+  Тип   ACL    Итог   Кольца   Сегм  Размер  Имя
+  dir   sma    sma    4,7,7   #7         -  Ivanov
+  dir   s      s      4,7,7   #8         -  Petrov
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ list >sss
+Каталог >sss (записей: 4)
+  ACL — что разрешает список доступа; Итог — что реально можно с учётом кольца
+  Тип   ACL    Итог   Кольца   Сегм  Размер  Имя
+  gate  re     e      0,0,5   #13      137  hcs_ [safety]
+  data  r      null   0,0,0   #12       67  kernel_data [safety]
+  data  r      r      4,4,4   #14       86  motd [safety]
+  exec  re     re     1,5,5   #11       54  sss_hello [safety]
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ create_dir work
+Создан каталог >udd>Students>Ivanov>work (сегмент #16), скобки 4,7,7
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ change_wdir work
+Рабочий каталог: >udd>Students>Ivanov>work
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print_wdir
+>udd>Students>Ivanov>work
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create_dir >hack
+Ошибка: Отказ по ACL: у Ivanov.Students.a нет режима 'a' к > (ACL разрешает: s)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create notes Конспект по Multics: всё есть сегмент
+  [ядро] сегмент #17 (notes) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #17 (notes), страница 0 (запись)
+      страница загружена с диска в кадр 0
+Создан сегмент (данные) >udd>Students>Ivanov>work>notes (сегмент #17), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ status notes
+Запись >udd>Students>Ivanov>work>notes
+  имена            : notes
+  тип              : данные
+  номер сегмента   : #17
+  владелец         : Ivanov.Students.a
+  кольцевые скобки : 4,4,4
+  safety switch    : выключен
+  создан / изменён : 22.11.2026 17:14:34 / 22.11.2026 17:14:34
+  размер           : 37 симв., страниц 1, в памяти: [0]
+  ACL:
+    rew   Ivanov.Students.*
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ list
+Каталог >udd>Students>Ivanov>work (записей: 1)
+  ACL — что разрешает список доступа; Итог — что реально можно с учётом кольца
+  Тип   ACL    Итог   Кольца   Сегм  Размер  Имя
+  data  rew    rew    4,4,4   #17       37  notes
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ change_wdir <
+Рабочий каталог: >udd>Students>Ivanov
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ print_wdir
+>udd>Students>Ivanov
+Ivanov.Students >udd>Students>Ivanov [кольцо 4]$ change_wdir work
+Рабочий каталог: >udd>Students>Ivanov>work
+
+==============================================================================
+3. ACL: проверка прав по Person.Project.tag
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ list_acl notes
+ACL >udd>Students>Ivanov>work>notes:
+  rew   Ivanov.Students.*
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ login Petrov.Students petr
+Создан процесс pid 2 для Petrov.Students.a, кольцо 4, рабочий каталог >udd>Students>Petrov
+*** Добро пожаловать в учебный Multics! Справка: help. Новое: help -af (активные функции).
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ print >udd>Students>Ivanov>work>notes
+Ошибка: Отказ по ACL: у Petrov.Students.a нет режима 'r' к >udd>Students>Ivanov>work>notes (ACL разрешает: null)
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ switch 1
+Терминал подключён к процессу pid 1 (Ivanov.Students.a)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ set_acl notes r Petrov.Students
+ACL >udd>Students>Ivanov>work>notes: Petrov.Students.* -> r
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ list_acl notes
+ACL >udd>Students>Ivanov>work>notes:
+  rew   Ivanov.Students.*
+  r     Petrov.Students.*
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ switch 2
+Терминал подключён к процессу pid 2 (Petrov.Students.a)
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ print >udd>Students>Ivanov>work>notes
+  [ядро] сегмент #17 (notes) стал известен процессу 2 (KST)
+Конспект по Multics: всё есть сегмент
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ set_acl >udd>Students>Ivanov>work>notes rew Petrov.Students
+Ошибка: Отказ по ACL: у Petrov.Students.a нет режима 'm' к >udd>Students>Ivanov>work (ACL разрешает: s)
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ switch 1
+Терминал подключён к процессу pid 1 (Ivanov.Students.a)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ delete_acl notes Petrov.Students
+Запись удалена
+
+==============================================================================
+4. Кольца защиты и кольцевые скобки
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print >sss>kernel_data
+Ошибка: Отказ по кольцу: чтение/просмотр >sss>kernel_data требует кольцо <= 0, вы в кольце 4 (скобки 0,0,0)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ effective_access >sss>kernel_data
+>sss>kernel_data для Ivanov.Students.a в кольце 4 (скобки 0,0,0, ACL даёт: r)
+  режим  ACL  кольцо  итог   пояснение
+  r      да   нет     нет    чтение/просмотр >sss>kernel_data требует кольцо <= 0, вы в кольце 4 (скобки 0,0,0)
+  e      нет  нет     нет    >sss>kernel_data недоступен из кольца 4 (скобки 0,0,0)
+  w      нет  нет     нет    изменение >sss>kernel_data требует кольцо <= 0, вы в кольце 4 (скобки 0,0,0)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ set_ring_brackets notes 2 2 2
+Ошибка: r1=2 меньше вашего кольца 4: нельзя выдать объекту больше привилегий, чем есть у вас
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ set_ring_brackets notes 4 4 4
+Кольцевые скобки >udd>Students>Ivanov>work>notes: 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create -exec gate_test "echo [gate_test] я в кольце пользователя; ring; call hcs_; ring; echo [gate_test] снова в пользовательском кольце"
+  [ядро] сегмент #19 (gate_test) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #19 (gate_test), страница 0 (запись)
+      страница загружена с диска в кадр 1
+  [ядро, кольцо 0] страничное прерывание: сегмент #19 (gate_test), страница 1 (запись)
+      страница загружена с диска в кадр 2
+Создан сегмент (исполняемый) >udd>Students>Ivanov>work>gate_test (сегмент #19), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ run gate_test
+[pid 1 Ivanov] [gate_test] я в кольце пользователя
+[pid 1 Ivanov] текущее кольцо = 4
+  [ядро, кольцо 0] linkage fault: gate_test -> «hcs_» (ссылка не разрешена)
+      поиск в >udd>Students>Ivanov>work: не найден
+      поиск в >sss: найден (сегмент #13)
+      сегмент #13 (>sss>hcs_) внесён в KST процесса
+      ссылка «hcs_» защёлкнута -> сегмент #13
+  [ядро] вход через шлюз: кольцо 4 -> 0 (сегмент hcs_)
+  [ядро, кольцо 0] страничное прерывание: сегмент #13 (hcs_), страница 0
+      страница загружена с диска в кадр 3
+[pid 1 Ivanov] [hcs_] выполняется в ядре через шлюз
+[pid 1 Ivanov] текущее кольцо = 0
+  [ядро] сегмент #12 (kernel_data) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #12 (kernel_data), страница 0
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #17 (notes) из кадра 0 — страница изменена, запись на диск
+      страница загружена с диска в кадр 0
+  [ядро, кольцо 0] страничное прерывание: сегмент #12 (kernel_data), страница 1
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #19 (gate_test) из кадра 1 — страница изменена, запись на диск
+      страница загружена с диска в кадр 1
+[pid 1 Ivanov] прочитан сегмент >sss>kernel_data
+  [ядро, кольцо 0] страничное прерывание: сегмент #13 (hcs_), страница 1
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 1 сегмента #19 (gate_test) из кадра 2 — страница изменена, запись на диск
+      страница загружена с диска в кадр 2
+[pid 1 Ivanov] [hcs_] таблицы ядра прочитаны, возвращаюсь в кольцо вызывающего
+  [ядро] возврат: кольцо 0 -> 4
+  [ядро, кольцо 0] страничное прерывание: сегмент #19 (gate_test), страница 0
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #13 (hcs_) из кадра 3
+      страница загружена с диска в кадр 3
+[pid 1 Ivanov] текущее кольцо = 4
+[pid 1 Ivanov] [gate_test] снова в пользовательском кольце
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ login Guest.Visitors guest
+Создан процесс pid 3 для Guest.Visitors.a, кольцо 4, рабочий каталог >udd>Visitors>Guest
+*** Добро пожаловать в учебный Multics! Справка: help. Новое: help -af (активные функции).
+Guest.Visitors >udd>Visitors>Guest [кольцо 4]$ create secret Личные заметки гостя
+  [ядро] сегмент #21 (secret) стал известен процессу 3 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #21 (secret), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #12 (kernel_data) из кадра 0
+      страница загружена с диска в кадр 0
+Создан сегмент (данные) >udd>Visitors>Guest>secret (сегмент #21), скобки 4,4,4
+Guest.Visitors >udd>Visitors>Guest [кольцо 4]$ ring 5
+Процесс 3 теперь работает в кольце 5
+Guest.Visitors >udd>Visitors>Guest [кольцо 5]$ print secret
+Ошибка: Отказ по кольцу: чтение/просмотр >udd>Visitors>Guest>secret требует кольцо <= 4, вы в кольце 5 (скобки 4,4,4)
+Guest.Visitors >udd>Visitors>Guest [кольцо 5]$ ring 4
+Ошибка: Кольцо можно только увеличить (>= 5, <= 7): снизить номер кольца без шлюза нельзя
+Guest.Visitors >udd>Visitors>Guest [кольцо 5]$ logout
+Процесс pid 3 (Guest.Visitors.a) завершён, KST уничтожена (известных сегментов: 1)
+Текущим стал процесс pid 1 (Ivanov.Students.a)
+
+==============================================================================
+5. Динамическое связывание (linkage fault и защёлкивание ссылки)
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ switch 1
+Терминал подключён к процессу pid 1 (Ivanov.Students.a)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create -exec util "echo [util] библиотечная процедура util выполнена"
+  [ядро] сегмент #22 (util) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #22 (util), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 1 сегмента #12 (kernel_data) из кадра 1
+      страница загружена с диска в кадр 1
+Создан сегмент (исполняемый) >udd>Students>Ivanov>work>util (сегмент #22), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create -exec main "echo [main] начало; call util; call util; call sss_hello; echo [main] конец"
+  [ядро] сегмент #23 (main) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #23 (main), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 1 сегмента #13 (hcs_) из кадра 2
+      страница загружена с диска в кадр 2
+  [ядро, кольцо 0] страничное прерывание: сегмент #23 (main), страница 1 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #19 (gate_test) из кадра 3
+      страница загружена с диска в кадр 3
+Создан сегмент (исполняемый) >udd>Students>Ivanov>work>main (сегмент #23), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print_search_rules
+  1. рабочий каталог (>udd>Students>Ivanov>work)
+  2. >sss
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ where sss_hello
+  1. >udd>Students>Ivanov>work: нет
+  2. >sss>sss_hello (#11)  <- будет использован
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ run main
+[pid 1 Ivanov] [main] начало
+  [ядро, кольцо 0] linkage fault: main -> «util» (ссылка не разрешена)
+      поиск в >udd>Students>Ivanov>work: найден (сегмент #22)
+      ссылка «util» защёлкнута -> сегмент #22
+[pid 1 Ivanov] [util] библиотечная процедура util выполнена
+  ссылка «util» уже защёлкнута — прямой вызов, без linkage fault
+[pid 1 Ivanov] [util] библиотечная процедура util выполнена
+  [ядро, кольцо 0] linkage fault: main -> «sss_hello» (ссылка не разрешена)
+      поиск в >udd>Students>Ivanov>work: не найден
+      поиск в >sss: найден (сегмент #11)
+      сегмент #11 (>sss>sss_hello) внесён в KST процесса
+      ссылка «sss_hello» защёлкнута -> сегмент #11
+  [ядро, кольцо 0] страничное прерывание: сегмент #11 (sss_hello), страница 0
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #21 (secret) из кадра 0 — страница изменена, запись на диск
+      страница загружена с диска в кадр 0
+[pid 1 Ivanov] [sss_hello] системная библиотека приветствует вас
+[pid 1 Ivanov] [main] конец
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print_linkage
+Связи процесса 1:
+  gate_test -> hcs_: защёлкнута -> >sss>hcs_
+  main -> util: защёлкнута -> >udd>Students>Ivanov>work>util
+  main -> sss_hello: защёлкнута -> >sss>sss_hello
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ list_ref_names
+KST процесса 1 (Ivanov.Students.a):
+  сегм.  кольцо инициации  путь
+  #17           4          >udd>Students>Ivanov>work>notes
+  #19           4          >udd>Students>Ivanov>work>gate_test
+  #13           4          >sss>hcs_
+  #12           0          >sss>kernel_data
+  #22           4          >udd>Students>Ivanov>work>util
+  #23           4          >udd>Students>Ivanov>work>main
+  #11           4          >sss>sss_hello
+
+==============================================================================
+6. Виртуальная память: страницы, кадры, алгоритмы замены
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create big
+Создан сегмент (данные) >udd>Students>Ivanov>work>big (сегмент #24), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ fill big 300
+  [ядро] сегмент #24 (big) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #22 (util) из кадра 1 — страница изменена, запись на диск
+      страница загружена с диска в кадр 1
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 1 (запись)
+      часы: пропущено кадров со вторым шансом: 1; вытесняется страница 1 сегмента #23 (main) из кадра 3 — страница изменена, запись на диск
+      страница загружена с диска в кадр 3
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 2 (запись)
+      часы: пропущено кадров со вторым шансом: 2; вытесняется страница 0 сегмента #23 (main) из кадра 2 — страница изменена, запись на диск
+      страница загружена с диска в кадр 2
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 3 (запись)
+      часы: пропущено кадров со вторым шансом: 1; вытесняется страница 0 сегмента #11 (sss_hello) из кадра 0
+      страница загружена с диска в кадр 0
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 4 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #24 (big) из кадра 1 — страница изменена, запись на диск
+      страница загружена с диска в кадр 1
+Сегмент >udd>Students>Ivanov>work>big: 300 символов, 5 стр.
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ memstat
+Физическая память: 4 кадров по 64 символов; алгоритм замены: часы (второй шанс); стрелка часов -> кадр 2
+  кадр  сегмент                  стр.  used  mod  загр.  обращ.
+    0   #24 big                   3   1     1     31      31
+    1   #24 big                   4   1     1     32      32
+    2   #24 big                   2   1     1     30      30  <- стрелка
+    3   #24 big                   1   0     1     29      29
+Обращений: 32, попаданий: 14 (44%), страничных прерываний: 18, вытеснений: 14, записей на диск: 8
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ page_table big
+Таблица страниц сегмента #24 (>udd>Students>Ivanov>work>big), 300 симв.:
+  стр. 0: на диске
+  стр. 1: кадр 3 (used=0, modified=1)
+  стр. 2: кадр 2 (used=1, modified=1)
+  стр. 3: кадр 0 (used=1, modified=1)
+  стр. 4: кадр 1 (used=1, modified=1)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print -q big
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 0
+      часы: пропущено кадров со вторым шансом: 1; вытесняется страница 1 сегмента #24 (big) из кадра 3 — страница изменена, запись на диск
+      страница загружена с диска в кадр 3
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 1
+      часы: пропущено кадров со вторым шансом: 2; вытесняется страница 2 сегмента #24 (big) из кадра 2 — страница изменена, запись на диск
+      страница загружена с диска в кадр 2
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 2
+      часы: пропущено кадров со вторым шансом: 1; вытесняется страница 3 сегмента #24 (big) из кадра 0 — страница изменена, запись на диск
+      страница загружена с диска в кадр 0
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 3
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 4 сегмента #24 (big) из кадра 1 — страница изменена, запись на диск
+      страница загружена с диска в кадр 1
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 4
+      часы: пропущено кадров со вторым шансом: 1; вытесняется страница 0 сегмента #24 (big) из кадра 3
+      страница загружена с диска в кадр 3
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ touch big 290
+Попадание: страница 4 уже в кадре 3
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ set_policy lru
+Алгоритм замены страниц: LRU
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print -q notes
+  [ядро, кольцо 0] страничное прерывание: сегмент #17 (notes), страница 0
+      LRU: дольше всех без обращений; вытесняется страница 1 сегмента #24 (big) из кадра 2
+      страница загружена с диска в кадр 2
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ print -q big
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 0
+      LRU: дольше всех без обращений; вытесняется страница 2 сегмента #24 (big) из кадра 0
+      страница загружена с диска в кадр 0
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 1
+      LRU: дольше всех без обращений; вытесняется страница 3 сегмента #24 (big) из кадра 1
+      страница загружена с диска в кадр 1
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 2
+      LRU: дольше всех без обращений; вытесняется страница 4 сегмента #24 (big) из кадра 3
+      страница загружена с диска в кадр 3
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 3
+      LRU: дольше всех без обращений; вытесняется страница 0 сегмента #17 (notes) из кадра 2
+      страница загружена с диска в кадр 2
+  [ядро, кольцо 0] страничное прерывание: сегмент #24 (big), страница 4
+      LRU: дольше всех без обращений; вытесняется страница 0 сегмента #24 (big) из кадра 0
+      страница загружена с диска в кадр 0
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ memstat
+Физическая память: 4 кадров по 64 символов; алгоритм замены: LRU; стрелка часов -> кадр 0
+  кадр  сегмент                  стр.  used  mod  загр.  обращ.
+    0   #24 big                   4   1     0     44      44
+    1   #24 big                   1   1     0     41      41
+    2   #24 big                   3   1     0     43      43
+    3   #24 big                   2   1     0     42      42
+Обращений: 44, попаданий: 15 (34%), страничных прерываний: 29, вытеснений: 25, записей на диск: 12
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ set_policy clock
+Алгоритм замены страниц: часы (второй шанс)
+
+==============================================================================
+7. Процессы и планировщик round-robin
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ reset_links
+Сброшено ссылок: 3
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create -exec job1 "echo [job1] старт; compute 3; call util; echo [job1] готово"
+  [ядро] сегмент #25 (job1) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #25 (job1), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 4 сегмента #24 (big) из кадра 0
+      страница загружена с диска в кадр 0
+Создан сегмент (исполняемый) >udd>Students>Ivanov>work>job1 (сегмент #25), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ start job1
+Задача «job1» поставлена в очередь процесса 1
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ switch 2
+Терминал подключён к процессу pid 2 (Petrov.Students.a)
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ create -exec job2 "echo [job2] старт; compute 3; call sss_hello; echo [job2] готово"
+  [ядро] сегмент #26 (job2) стал известен процессу 2 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #26 (job2), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 1 сегмента #24 (big) из кадра 1
+      страница загружена с диска в кадр 1
+Создан сегмент (исполняемый) >udd>Students>Petrov>job2 (сегмент #26), скобки 4,4,4
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ start job2
+Задача «job2» поставлена в очередь процесса 2
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ ps
+  PID  Пользователь               Кольцо  Состояние  Задач  CPU  Стр.прер.  Каталог
+    0  Initializer.SysControl.z       0   система       0    0         0  >
+    1  Ivanov.Students.a              4   готов         1   13        29  >udd>Students>Ivanov>work
+    2  Petrov.Students.a              4   готов         1    0         1  >udd>Students>Petrov
+  Виртуальное время: 13, квант = 2 такта, в очереди: [1, 2]
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ schedule
+[traffic controller] t=013: квант -> pid 1 (Ivanov)
+[pid 1 Ivanov] [job1] старт
+[traffic controller] t=015: квант -> pid 2 (Petrov)
+[pid 2 Petrov] [job2] старт
+[traffic controller] t=017: квант -> pid 1 (Ivanov)
+[traffic controller] t=019: квант -> pid 2 (Petrov)
+[traffic controller] t=021: квант -> pid 1 (Ivanov)
+  [ядро, кольцо 0] linkage fault: job1 -> «util» (ссылка не разрешена)
+      поиск в >udd>Students>Ivanov>work: найден (сегмент #22)
+      ссылка «util» защёлкнута -> сегмент #22
+  [ядро, кольцо 0] страничное прерывание: сегмент #22 (util), страница 0
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 3 сегмента #24 (big) из кадра 2
+      страница загружена с диска в кадр 2
+[pid 1 Ivanov] [util] библиотечная процедура util выполнена
+[pid 1 Ivanov] [job1] готово
+[traffic controller] t=023: квант -> pid 2 (Petrov)
+  [ядро, кольцо 0] linkage fault: job2 -> «sss_hello» (ссылка не разрешена)
+      поиск в >udd>Students>Petrov: не найден
+      поиск в >sss: найден (сегмент #11)
+      сегмент #11 (>sss>sss_hello) внесён в KST процесса
+      ссылка «sss_hello» защёлкнута -> сегмент #11
+  [ядро, кольцо 0] страничное прерывание: сегмент #11 (sss_hello), страница 0
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 2 сегмента #24 (big) из кадра 3
+      страница загружена с диска в кадр 3
+[pid 2 Petrov] [sss_hello] системная библиотека приветствует вас
+[pid 2 Petrov] [job2] готово
+[traffic controller] t=025: квант -> pid 1 (Ivanov)
+[traffic controller] pid 1: задача «job1» завершена
+[traffic controller] t=025: квант -> pid 2 (Petrov)
+[traffic controller] pid 2: задача «job2» завершена
+[traffic controller] очередь готовых процессов пуста
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ ps
+  PID  Пользователь               Кольцо  Состояние  Задач  CPU  Стр.прер.  Каталог
+    0  Initializer.SysControl.z       0   система       0    0         0  >
+    1  Ivanov.Students.a              4   ожидает       0   19        30  >udd>Students>Ivanov>work
+    2  Petrov.Students.a              4   ожидает       0    6         2  >udd>Students>Petrov
+  Виртуальное время: 25, квант = 2 такта, в очереди: -
+
+==============================================================================
+8. Файлы: имена, ссылки, копии, safety switch, дерево
+==============================================================================
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ switch 1
+Терминал подключён к процессу pid 1 (Ivanov.Students.a)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ add_name notes konspekt
+>udd>Students>Ivanov>work>notes: имена notes, konspekt
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ copy konspekt notes.bak
+  [ядро, кольцо 0] страничное прерывание: сегмент #17 (notes), страница 0
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #25 (job1) из кадра 0 — страница изменена, запись на диск
+      страница загружена с диска в кадр 0
+  [ядро] сегмент #27 (notes.bak) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #27 (notes.bak), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #26 (job2) из кадра 1 — страница изменена, запись на диск
+      страница загружена с диска в кадр 1
+Скопировано: >udd>Students>Ivanov>work>notes -> >udd>Students>Ivanov>work>notes.bak (новый сегмент #27)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create_dir archive
+Создан каталог >udd>Students>Ivanov>work>archive (сегмент #28), скобки 4,7,7
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ move notes.bak archive
+Перемещено: >udd>Students>Ivanov>work>archive>notes.bak (сегмент #27)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ link >sss>sss_hello hello
+Создана ссылка >udd>Students>Ivanov>work>hello -> >sss>sss_hello
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ safety_sw_on notes
+>udd>Students>Ivanov>work>notes: safety switch включён
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ delete notes
+Ошибка: У >udd>Students>Ivanov>work>notes включён safety switch — удаление запрещено (safety_sw_off)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ list
+Каталог >udd>Students>Ivanov>work (записей: 8)
+  ACL — что разрешает список доступа; Итог — что реально можно с учётом кольца
+  Тип   ACL    Итог   Кольца   Сегм  Размер  Имя
+  dir   sma    sma    4,7,7   #28        -  archive
+  data  rew    rew    4,4,4   #24      300  big
+  exec  rew    rew    4,4,4   #19      109  gate_test
+  exec  rew    rew    4,4,4   #25       56  job1
+  exec  rew    rew    4,4,4   #23       71  main
+  data  rew    rew    4,4,4   #17       37  notes  (и: konspekt) [safety]
+  exec  rew    rew    4,4,4   #22       49  util
+  link  -      -      -       -          -  hello -> >sss>sss_hello
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ tree
+>udd>Students>Ivanov>work
+├── archive>
+│   └── notes.bak  (37)
+├── big  (300)
+├── gate_test  (109)
+├── job1  (56)
+├── main  (71)
+├── notes  (37)
+├── util  (49)
+└── hello -> >sss>sss_hello
+
+==============================================================================
+9. Активные функции и сценарии exec_com
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ echo Пользователь [user], каталог [wd], 2+3*4 = [plus 2 [times 3 4]]
+Пользователь Ivanov.Students, каталог >udd>Students>Ivanov>work, 2+3*4 = 14
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ echo Сегменты: [segments **]
+Сегменты: big gate_test job1 main notes util
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ if [exists segment notes] -then "echo notes на месте" -else "echo notes нет"
+notes на месте
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ value_set course Операционные системы
+course = Операционные системы
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ echo Курс: [value_get course]
+Курс: Операционные системы
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ create backup.ec "&- сценарий: копия сегмента с суффиксом .old; &if [exists segment &1] &then &goto ok; &print Нет сегмента &1; &quit; &label ok; copy &1 &1.old; &print Готово: [entry &1].old"
+  [ядро] сегмент #30 (backup.ec) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #30 (backup.ec), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #22 (util) из кадра 2
+      страница загружена с диска в кадр 2
+  [ядро, кольцо 0] страничное прерывание: сегмент #30 (backup.ec), страница 1 (запись)
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #11 (sss_hello) из кадра 3
+      страница загружена с диска в кадр 3
+  [ядро, кольцо 0] страничное прерывание: сегмент #30 (backup.ec), страница 2 (запись)
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #17 (notes) из кадра 0
+      страница загружена с диска в кадр 0
+Создан сегмент (данные) >udd>Students>Ivanov>work>backup.ec (сегмент #30), скобки 4,4,4
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ exec_com backup util
+ec> copy util util.old
+  [ядро, кольцо 0] страничное прерывание: сегмент #22 (util), страница 0
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #27 (notes.bak) из кадра 1 — страница изменена, запись на диск
+      страница загружена с диска в кадр 1
+  [ядро] сегмент #31 (util.old) стал известен процессу 1 (KST)
+  [ядро, кольцо 0] страничное прерывание: сегмент #31 (util.old), страница 0 (запись)
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #30 (backup.ec) из кадра 2 — страница изменена, запись на диск
+      страница загружена с диска в кадр 2
+Скопировано: >udd>Students>Ivanov>work>util -> >udd>Students>Ivanov>work>util.old (новый сегмент #31)
+Готово: util.old
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ exec_com backup nothing_here
+  [ядро, кольцо 0] страничное прерывание: сегмент #30 (backup.ec), страница 0
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 1 сегмента #30 (backup.ec) из кадра 3 — страница изменена, запись на диск
+      страница загружена с диска в кадр 3
+  [ядро, кольцо 0] страничное прерывание: сегмент #30 (backup.ec), страница 1
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 2 сегмента #30 (backup.ec) из кадра 0 — страница изменена, запись на диск
+      страница загружена с диска в кадр 0
+  [ядро, кольцо 0] страничное прерывание: сегмент #30 (backup.ec), страница 2
+      часы: пропущено кадров со вторым шансом: 0; вытесняется страница 0 сегмента #22 (util) из кадра 1
+      страница загружена с диска в кадр 1
+Нет сегмента nothing_here
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ do "status &1" util.old
+Запись >udd>Students>Ivanov>work>util.old
+  имена            : util.old
+  тип              : исполняемый
+  номер сегмента   : #31
+  владелец         : Ivanov.Students.a
+  кольцевые скобки : 4,4,4
+  safety switch    : выключен
+  создан / изменён : 22.11.2026 17:14:34 / 22.11.2026 17:14:34
+  размер           : 49 симв., страниц 1, в памяти: [0]
+  ACL:
+    rew   Ivanov.Students.*
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ abbrev add ll list -seg
+ll -> list -seg
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ ll
+Каталог >udd>Students>Ivanov>work (записей: 8)
+  ACL — что разрешает список доступа; Итог — что реально можно с учётом кольца
+  Тип   ACL    Итог   Кольца   Сегм  Размер  Имя
+  data  rew    rew    4,4,4   #30      167  backup.ec
+  data  rew    rew    4,4,4   #24      300  big
+  exec  rew    rew    4,4,4   #19      109  gate_test
+  exec  rew    rew    4,4,4   #25       56  job1
+  exec  rew    rew    4,4,4   #23       71  main
+  data  rew    rew    4,4,4   #17       37  notes  (и: konspekt) [safety]
+  exec  rew    rew    4,4,4   #22       49  util
+  exec  rew    rew    4,4,4   #31       49  util.old
+
+==============================================================================
+10. Связь, печать и администрирование
+==============================================================================
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ send_message Petrov Загляни в >udd>Students>Ivanov>work
+Сообщение для Petrov.Students доставлено
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ send_mail Petrov.Students Сдаём реферат в пятницу
+Письмо отправлено Petrov.Students
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ dprint util
+  [ядро, кольцо 0] страничное прерывание: сегмент #22 (util), страница 0
+      часы: пропущено кадров со вторым шансом: 4; вытесняется страница 0 сегмента #31 (util.old) из кадра 2 — страница изменена, запись на диск
+      страница загружена с диска в кадр 2
+  [ядро] запущен демон печати IO.SysDaemon (pid 4)
+Запросы печати: №1; в очереди: 1 (выполнятся при schedule)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ switch 2
+Терминал подключён к процессу pid 2 (Petrov.Students.a)
+*** Сообщение от Ivanov.Students.a (17:14:34): Загляни в >udd>Students>Ivanov>work
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ read_mail
+  1. от Ivanov.Students.a 22.11 17:14 [новое]: Сдаём реферат в пятницу
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ schedule
+[traffic controller] t=025: квант -> pid 4 (IO)
+[IO daemon] печать запроса №1: >udd>Students>Ivanov>work>util (для Ivanov.Students.a)
+  | echo [util] библиотечная процедура util выполнена
+[IO daemon] запрос №1 напечатан, строк: 1
+[traffic controller] pid 4: задача «печать» завершена
+[traffic controller] очередь готовых процессов пуста
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ login Admin.SysAdmin admin
+Создан процесс pid 5 для Admin.SysAdmin.a, кольцо 4, рабочий каталог >udd>SysAdmin>Admin
+*** Добро пожаловать в учебный Multics! Справка: help. Новое: help -af (активные функции).
+Admin.SysAdmin >udd>SysAdmin>Admin [кольцо 4]$ new_user Sidorov.Students sid
+Пользователь Sidorov.Students зарегистрирован, домашний каталог >udd>Students>Sidorov
+Admin.SysAdmin >udd>SysAdmin>Admin [кольцо 4]$ list_users
+  Admin.SysAdmin (в системе)
+  Guest.Visitors
+  Ivanov.Students (в системе)
+  Petrov.Students (в системе)
+  Sidorov.Students
+Admin.SysAdmin >udd>SysAdmin>Admin [кольцо 4]$ logout
+Процесс pid 5 (Admin.SysAdmin.a) завершён, KST уничтожена (известных сегментов: 0)
+Текущим стал процесс pid 2 (Petrov.Students.a)
+
+==============================================================================
+11. Завершение: delete, logout
+==============================================================================
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ switch 1
+Терминал подключён к процессу pid 1 (Ivanov.Students.a)
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ safety_sw_off notes
+>udd>Students>Ivanov>work>notes: safety switch выключен
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ delete big
+Удалён сегмент big
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ memstat
+Физическая память: 4 кадров по 64 символов; алгоритм замены: часы (второй шанс); стрелка часов -> кадр 3
+  кадр  сегмент                  стр.  used  mod  загр.  обращ.
+    0   #30 backup.ec             1   0     0     68      68
+    1   #30 backup.ec             2   0     0     69      69
+    2   #22 util                  0   1     0     70      70
+    3   #30 backup.ec             0   0     0     67      67  <- стрелка
+Обращений: 70, попаданий: 26 (37%), страничных прерываний: 44, вытеснений: 40, записей на диск: 19
+Ivanov.Students >udd>Students>Ivanov>work [кольцо 4]$ logout
+Процесс pid 1 (Ivanov.Students.a) завершён, KST уничтожена (известных сегментов: 11)
+Текущим стал процесс pid 2 (Petrov.Students.a)
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ who
+  Petrov.Students.a            pid 2  кольцо 4
+Всего пользователей: 1
+Petrov.Students >udd>Students>Petrov [кольцо 4]$ logout
+Процесс pid 2 (Petrov.Students.a) завершён, KST уничтожена (известных сегментов: 3)
+Multics> who
+В системе никого нет.
+Всего пользователей: 0
+
+Демонстрация завершена.
