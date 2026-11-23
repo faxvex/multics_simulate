@@ -3,8 +3,8 @@ message: "Если вы используете эту модель, пожалу
 title: "Учебный Multics (multics_sim)"
 type: software
 authors:
-  - family-names: "Лоскутов"
-    given-names: "Иван Андреевич"
+  - family-names: "Loskutov" 
+    given-names: "Ivan Andreevich"
 license: MIT
 repository-code: "[URL репозитория]"
 version: "1.0.0"
