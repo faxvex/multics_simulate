@@ -7,5 +7,6 @@ authors:
     given-names: "Ivan Andreevich"
 license: MIT
 repository-code: "https://github.com/faxvex/multics_simulate"
+doi: "10.5281/zenodo.24462606"
 version: "1.0.0"
 date-released: "2026-11-22"
