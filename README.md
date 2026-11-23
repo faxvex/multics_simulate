@@ -28,8 +28,8 @@
 ## Быстрый старт
 
 ```bash
-git clone <URL-репозитория>
-cd <папка-репозитория>
+git clone https://github.com/faxvex/multics_simulate.git
+cd multics_simulate
 
 python -m multics_sim --demo   # демонстрационный сценарий (все механизмы подряд)
 python -m multics_sim          # интерактивная оболочка
